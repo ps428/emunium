@@ -5,16 +5,26 @@ import random
 import tempfile
 import time
 import struct
-
-try:
-    import keyboard
-except ImportError:
-    keyboard = None
+import keyboard
+import platform
 
 import pyautogui
 import pyclick
 
 from enum import Enum
+
+
+def get_os():
+    os = platform.system()
+    if os == "Windows":
+        return "Windows"
+    elif os == "Linux":
+        return "Linux"
+    else:
+        return "Unknown OS"
+
+
+OS_NAME = get_os()
 
 
 class ClickType(Enum):
@@ -125,13 +135,12 @@ class EmuniumBase:
             # Update by Pranav (https://github.com/ps428)
             # keyboard.write used in silent_type needs sudo mode on Linux machines
             # This uses pyautogui.press instead of keyboard.write
-            if keyboard is None:
+            if OS_NAME == "Linux":
                 pyautogui.press(char)
             else:
                 keyboard.write(char)
 
             time.sleep(delay)
-
 
     def _scroll_smoothly_to_element(self, element_rect):
         window_width = self.browser_inner_window[0]
